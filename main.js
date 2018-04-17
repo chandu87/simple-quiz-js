@@ -11,14 +11,22 @@ QuestionObj.prototype.displayQuestion = function(){
     console.log(i+" : " + this.answers[i]);
     }
 };
-QuestionObj.prototype.checkAnswer = function (){
-    let number = window.prompt(this.question);
-    if(number == this.correctAns){
-    console.log("Correct Answer " + number);
+QuestionObj.prototype.checkAnswer = function (number,callback){
+    let scr;
+    if(number === this.correctAns){
+        console.log("Correct Answer !!!");
+        scr = callback(true);
     }
     else{
         console.log("Wrong Answer");
+        scr = callback(false);
     }
+    this.displayScore(scr);
+};
+QuestionObj.prototype.displayScore = function(scr){
+    console.log("=========================");
+    console.log("Total score is " + scr);
+    console.log("...........................");
 };
 
 var question1 = new QuestionObj("what is the name of your teacher??",["jhon","Jonas",                "emily"],1);
@@ -27,7 +35,28 @@ var question3 = new QuestionObj("What is the population of Denmark",['6 Millions
 
 var questions = [question1, question2, question3];
 
-let randNum = Math.floor(Math.random()* questions.length);
-questions[randNum].displayQuestion();
-questions[randNum].checkAnswer();
+function score(){
+    let sc = 0;
+    return function(res){
+        if(res == true)
+        {
+            sc++;
+        }
+        return sc;
+    };
+}
+let totalScore = score();
+function quizGame(){
+    let randNum,answer;
+    while(answer !== 'exit'){ 
+        randNum = Math.floor(Math.random()* questions.length);
+        questions[randNum].displayQuestion();
+        answer = window.prompt("Enter the correct answer !"); 
+        questions[randNum].checkAnswer(parseInt(answer),totalScore);
+        }
+        console.log(">>>>>> Exit Game >>>>>>>>");
+}
+quizGame();
+
+
 })();
